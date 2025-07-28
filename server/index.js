@@ -121,8 +121,7 @@ const processPdfFile = async (filePath, persona = '', job = '') => {
     const jsonOutput = {
       title: h1Headings[0]?.text || "Untitled Document",
       outline: allHeadings,
-      persona: persona,
-      job: job
+
     };
 
     const outputDir = path.join(__dirname, 'output');
@@ -201,22 +200,12 @@ app.post('/upload', upload.array('file[]', 10), async (req, res) => {
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 
     const combinedOutput = {
-      metadata: {
-        input_documents: req.files.map(f => f.originalname),
-        persona,
-        job_to_be_done: job,
-        processing_timestamp: new Date().toISOString()
-      },
-      extracted_sections: extractedSections,
-      subsection_analysis: subsectionAnalysis
+      ...headingPayload
     };
 
-    fs.writeFileSync(
-      path.join(outputDir, "combined_output.json"),
-      JSON.stringify(combinedOutput, null, 2)
-    );
 
-    res.json(headingPayload);
+
+    res.json(combinedOutput);
 
   } catch (error) {
     console.error("Error during PDF processing:", error);

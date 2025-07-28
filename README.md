@@ -28,18 +28,3 @@ npm run dev
     { "level": "H2", "text": "Applications", "page": 3 }
   ]
 }
-
-# Round 1 B
-json
-{
-  "metadata": {
-    "persona": "Travel Planner",
-    "job_to_be_done": "Plan a trip"
-  },
-  "extracted_sections": [
-    { "document": "guide1.pdf", "section_title": "Day 1 Itinerary", "page_number": 2 }
-  ],
-  "subsection_analysis": [
-    { "document": "guide1.pdf", "refined_text": "Explore Nice and Cannes.", "page_number": 2 }
-  ]
-}
