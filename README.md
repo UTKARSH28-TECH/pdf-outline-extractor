@@ -22,6 +22,15 @@ Each document yields individual JSON summaries saved in /output. Data includes b
 docker build -t pdf-extractor-app:final .
 docker run -v ${PWD}\input:/app/input -v ${PWD}\output:/app/output -p 3000:3000 pdf-extractor-app:final
 ```
+# docker file 
+```bash
+FROM node:18-alpine
+WORKDIR /app
+COPY server/package*.json ./
+RUN npm install --production
+COPY server/ ./
+CMD ["node", "index.js"]
+```
 
 # Round 1 B
 ```bash
