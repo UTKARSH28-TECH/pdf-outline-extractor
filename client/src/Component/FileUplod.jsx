@@ -8,6 +8,8 @@ import toast, { Toaster } from 'react-hot-toast';
 
 function FileUploader() {
   const [files, setFiles] = useState([]);
+  const [persona, setPersona] = useState('');
+  const [job, setJob] = useState('');
   const [error, setError] = useState(false);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState(null);
@@ -50,7 +52,8 @@ fileArray.forEach((file, idx) => {
     for (let i = 0; i < files.length; i++) {
       formData.append('file[]', files[i]);
     }
-   
+    formData.append('persona', persona);
+    formData.append('job', job);
 
     try {
       setLoader(true);
@@ -62,7 +65,8 @@ fileArray.forEach((file, idx) => {
       setData(res.data);
       toast.success('Converted successfully!');
       setFiles([]);
-     
+      setPersona('');
+      setJob('');
     } catch (err) {
       setLoader(false);
       if (err.response?.data?.message) {
@@ -75,6 +79,15 @@ fileArray.forEach((file, idx) => {
     }
   };
 
+useEffect(() => {
+  if (data && data.outline) {
+    const personaItem = data.outline.find(item => item.text.toLowerCase().includes("persona"));
+    const jobDoneItem = data.outline.find(item => item.text.toLowerCase().includes("job done"));
+
+    if (personaItem) setPersona(personaItem.text);
+    if (jobDoneItem) setJob(jobDoneItem.text);
+  }
+}, [data]);
 
 
   return (
@@ -98,7 +111,20 @@ fileArray.forEach((file, idx) => {
               </p>
               <p className="text-sm text-gray-500">Click anywhere or drag & drop</p>
 
-
+              <input
+                type="text"
+                placeholder="Enter persona"
+                value={persona}
+                onChange={(e) => setPersona(e.target.value)}
+                className="border border-gray-300 rounded p-2 w-full max-w-md"
+              />
+              <input
+                type="text"
+                placeholder="Enter job"
+                value={job}
+                onChange={(e) => setJob(e.target.value)}
+                className="border border-gray-300 rounded p-2 w-full max-w-md"
+              />
 
               {files.length > 0 && (
                 <button
