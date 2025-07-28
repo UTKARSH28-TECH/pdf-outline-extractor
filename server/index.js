@@ -146,7 +146,6 @@ const processPdfFile = async (filePath, persona = '', job = '') => {
 
 let count = 0;
 
-// 🔥 INIT PDF Extraction from /input on Server Start
 (async () => {
   const inputDir = path.join(__dirname, 'input');
   const outputDir = path.join(__dirname, 'output');
@@ -184,8 +183,8 @@ let count = 0;
     const combinedOutput = {
       metadata: {
         input_documents: pdfResults.map(f => f.originalname),
-        persona: "",
-        job_to_be_done: "",
+        persona: "Document Compliance Officer",
+        job_to_be_done: "Review Government",
         processing_timestamp: new Date().toISOString()
       },
       extracted_sections: extractedSections,
@@ -197,9 +196,9 @@ let count = 0;
       JSON.stringify(combinedOutput, null, 2)
     );
 
-    console.log("✅ Initial extraction done from /input folder");
+    console.log("Initial extraction done from ");
   } catch (err) {
-    console.error("❌ Error during startup PDF processing:", err);
+    console.error("Error during startup PDF processing:", err);
   }
 })();
 
@@ -268,5 +267,5 @@ app.post('/upload', upload.array('file[]', 10), async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
