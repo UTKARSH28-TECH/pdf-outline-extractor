@@ -62,7 +62,6 @@ const processPdfFile = async (filePath, persona = '', job = '') => {
       };
     });
 
-  
     const maxFontSize = Math.max(...mergedLines.map(line => line.fontSize));
 
     const h1Headings = mergedLines
@@ -132,33 +131,77 @@ const processPdfFile = async (filePath, persona = '', job = '') => {
 
     const baseName = path.parse(filePath).name;
     const outputFilePath = path.join(outputDir, baseName + '.json');
-    fs.writeFileSync(outputFilePath, JSON.stringify(jsonOutput, null, 2));
     console.log('JSON output saved at:', outputFilePath);
 
-   return {
-  ...jsonOutput,
-  numPages: pdf.numPages,
-};
+    return {
+      ...jsonOutput,
+      numPages: pdf.numPages
+    };
 
   } catch (error) {
     console.error("PDF parsing failed for file:", filePath, error);
     throw error;
   }
-  
 };
 
-const inputDir = path.join(__dirname, 'input');
-fs.readdir(inputDir, (err, files) => {
-  if (err) {
-    console.error('Failed to read input directory:', err);
-    return;
-  }
+let count = 0;
 
-  files.filter(f => f.endsWith('.pdf')).forEach(pdfFile => {
-    const fullPath = path.join(inputDir, pdfFile);
-    processPdfFile(fullPath);
-  });
-});
+// 🔥 INIT PDF Extraction from /input on Server Start
+(async () => {
+  const inputDir = path.join(__dirname, 'input');
+  const outputDir = path.join(__dirname, 'output');
+
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+
+  try {
+    const files = fs.readdirSync(inputDir).filter(f => f.endsWith('.pdf'));
+
+    const extractedSections = [];
+    const subsectionAnalysis = [];
+    const pdfResults = [];
+
+    await Promise.all(files.map(async (pdfFile, index) => {
+      const fullPath = path.join(inputDir, pdfFile);
+      const pdfResult = await processPdfFile(fullPath);
+      // fs.unlinkSync(fullPath);
+
+      pdfResults.push({ ...pdfResult, originalname: pdfFile });
+
+      extractedSections.push({
+        document: pdfFile,
+        section_title: pdfResult.title,
+        importance_rank: index + 1,
+        page_number: pdfResult.outline[0]?.page || 1
+      });
+
+      subsectionAnalysis.push({
+        document: pdfFile,
+        refined_text: `Summary of ${pdfResult.title}...`,
+        page_number: pdfResult.outline[0]?.page || 1
+      });
+    }));
+
+    const combinedOutput = {
+      metadata: {
+        input_documents: pdfResults.map(f => f.originalname),
+        persona: "",
+        job_to_be_done: "",
+        processing_timestamp: new Date().toISOString()
+      },
+      extracted_sections: extractedSections,
+      subsection_analysis: subsectionAnalysis
+    };
+
+    fs.writeFileSync(
+      path.join(outputDir, "combined_outputs.json"),
+      JSON.stringify(combinedOutput, null, 2)
+    );
+
+    console.log("✅ Initial extraction done from /input folder");
+  } catch (err) {
+    console.error("❌ Error during startup PDF processing:", err);
+  }
+})();
 
 app.post('/upload', upload.array('file[]', 10), async (req, res) => {
   const persona = req.body.persona || '';
@@ -175,7 +218,7 @@ app.post('/upload', upload.array('file[]', 10), async (req, res) => {
       const pdfResult = await processPdfFile(file.path, persona, job);
       fs.unlinkSync(file.path);
 
-      pdfResults.push(pdfResult); 
+      pdfResults.push(pdfResult);
 
       extractedSections.push({
         document: file.originalname,
@@ -186,7 +229,7 @@ app.post('/upload', upload.array('file[]', 10), async (req, res) => {
 
       subsectionAnalysis.push({
         document: file.originalname,
-        refined_text: `Summary of ${pdfResult.title}...`, 
+        refined_text: `Summary of ${pdfResult.title}...`,
         page_number: pdfResult.outline[0]?.page || 1
       });
 
@@ -212,21 +255,17 @@ app.post('/upload', upload.array('file[]', 10), async (req, res) => {
     };
 
     fs.writeFileSync(
-      path.join(outputDir, "combined_output.json"),
+      path.join(outputDir, "combined_output" + count + ".json"),
       JSON.stringify(combinedOutput, null, 2)
     );
 
-    res.json(headingPayload);
-
+    res.json(combinedOutput);
+    count++;
   } catch (error) {
     console.error("Error during PDF processing:", error);
     res.status(500).json({ error: "Failed to parse PDFs" });
   }
 });
-
-
-
-
 
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);

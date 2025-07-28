@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "input_documents": [
+      "file05.pdf",
+      "file01.pdf",
+      "file04.pdf",
+      "file03.pdf",
+      "file02.pdf"
+    ],
+    "persona": "",
+    "job_to_be_done": "",
+    "processing_timestamp": "2025-07-28T15:08:14.881Z"
+  },
+  "extracted_sections": [
+    {
+      "document": "file05.pdf",
+      "section_title": "Untitled Document",
+      "importance_rank": 5,
+      "page_number": 1
+    },
+    {
+      "document": "file01.pdf",
+      "section_title": "Application form for grant of LTC advance",
+      "importance_rank": 1,
+      "page_number": 1
+    },
+    {
+      "document": "file04.pdf",
+      "section_title": "Parsippany -Troy Hills STEM Pathways",
+      "importance_rank": 4,
+      "page_number": 1
+    },
+    {
+      "document": "file03.pdf",
+      "section_title": "RFP: RRFP: RRFP: RRFP: Reeeequest fquest fquest f",
+      "importance_rank": 3,
+      "page_number": 1
+    },
+    {
+      "document": "file02.pdf",
+      "section_title": "Foundation Level Extensions",
+      "importance_rank": 2,
+      "page_number": 1
+    }
+  ],
+  "subsection_analysis": [
+    {
+      "document": "file05.pdf",
+      "refined_text": "Summary of Untitled Document...",
+      "page_number": 1
+    },
+    {
+      "document": "file01.pdf",
+      "refined_text": "Summary of Application form for grant of LTC advance...",
+      "page_number": 1
+    },
+    {
+      "document": "file04.pdf",
+      "refined_text": "Summary of Parsippany -Troy Hills STEM Pathways...",
+      "page_number": 1
+    },
+    {
+      "document": "file03.pdf",
+      "refined_text": "Summary of RFP: RRFP: RRFP: RRFP: Reeeequest fquest fquest f...",
+      "page_number": 1
+    },
+    {
+      "document": "file02.pdf",
+      "refined_text": "Summary of Foundation Level Extensions...",
+      "page_number": 1
+    }
+  ]
+}
