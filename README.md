@@ -1,35 +1,20 @@
-# PDF Intelligence Engine — Adobe Hackathon 2025
-This repository contains solutions for **Round 1A** and **Round 1B** of the Adobe India Hackathon 2025.  
-It extracts structured outlines from PDFs and performs persona-driven content analysis across document collections.
+#  PDF Extractor – Round 1B
+This project is a Node.js-powered API designed to intelligently extract structured content from PDF documents and analyze it from a persona-centric viewpoint
 
-# Features
-- Extracts Title, H1, H2, H3 headings from PDFs
-- Persona-based section extraction (Round 1B)
-- Outputs clean JSON format with page numbers
-- Dockerized backend (CPU-only, ≤200MB)
-- Optional frontend UI included (client folder)
-  
-# Folder Structure
-pdf-outline-extractor/ ├── input/ ← PDFs for testing ├── output/ ← JSON results ├── server/ ← Node.js backend │ ├── index.js ← Mode switcher │ ├── round1a.js ← Outline extractor │ └── round1b.js ← Persona extractor ├── client/ ← UI (optional for Round 2) ├── Dockerfile ← Docker config └── README.md ← You’re reading it!
-
+# Key Capabilities
+- Upload up to 10 PDFs with custom metadata
+- Extract document sections and infer content hierarchy
+- Generate persona-based summaries using document structure
+- Create combined output JSON files with metadata and insights
+- 
 # How to Run docker
+```bash
 docker build -t pdf-extractor-app:final .
 docker run -v ${PWD}\input:/app/input -v ${PWD}\output:/app/output -p 3000:3000 pdf-extractor-app:final
-
-# how to run client ui
-cd client
-npm run dev
-
-# Round 1 A output
-{
-  "title": "Understanding AI",
-  "outline": [
-    { "level": "H1", "text": "Introduction", "page": 1 },
-    { "level": "H2", "text": "Applications", "page": 3 }
-  ]
-}
+```
 
 # Round 1 B
+```bash
 json
 {
   "metadata": {
@@ -43,3 +28,4 @@ json
     { "document": "guide1.pdf", "refined_text": "Explore Nice and Cannes.", "page_number": 2 }
   ]
 }
+```
